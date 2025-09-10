@@ -2,12 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class DefaultController
+final class DefaultController extends AbstractController
 {
-    public function index()
+    #[Route('/default', name: 'app_default')]
+    public function index(): JsonResponse
     {
-        return new Response('Meu primeiro controller!');
+        return $this->json([
+            'message' => 'Welcome to your new controller!',
+            'path' => 'src/Controller/DefaultController.php',
+        ]);
     }
 }
