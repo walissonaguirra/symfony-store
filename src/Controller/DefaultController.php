@@ -8,9 +8,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DefaultController extends AbstractController
 {
-    #[Route('/default', name: 'app_default')]
+    #[Route('/', name: 'app_default')]
     public function index(): Response
     {
-        return $this->render('index.html.twig');
+        $name = 'Walisson Aguirra';
+
+        return $this->render('index.html.twig', compact('name'));
+    }
+
+    #[Route('/produto/{slug}', name: 'product_single')]
+    public function product(string $slug): Response
+    {
+        return $this->render('single.html.twig', compact('slug'));
     }
 }
