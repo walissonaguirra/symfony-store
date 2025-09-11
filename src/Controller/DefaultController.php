@@ -17,17 +17,17 @@ final class DefaultController extends AbstractController
         $name = 'Walisson Aguirra';
 
         // Inserindo dados doctrine
-        // $product = new Product();
-        // $product->setName('Produto Test');
-        // $product->setSlug('produto-test');
-        // $product->setDescription('Descrição');
-        // $product->setBady('Info produto');
-        // $product->setPrice(1990);
-        // $product->setCreatedAt(new \DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
-        // $product->setUpdatedAt(new \DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
+        $product = new Product();
+        $product->setName('Produto Test');
+        $product->setSlug('produto-test');
+        $product->setDescription('Descrição');
+        $product->setBady('Info produto');
+        $product->setPrice(1990);
+        $product->setCreatedAt(new \DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
+        $product->setUpdatedAt(new \DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
 
-        // $entityManager->persist($product);
-        // $entityManager->flush();
+        $entityManager->persist($product);
+        $entityManager->flush();
 
         // Atualizando dados doctrine
         // $product = $entityManager->getRepository(Product::class)->find(1);
@@ -37,10 +37,17 @@ final class DefaultController extends AbstractController
         // $entityManager->flush();
 
         // Apagar dados doctrine
-        $product = $entityManager->getRepository(Product::class)->find(1);
+        // $product = $entityManager->getRepository(Product::class)->find(1);
 
-        $entityManager->remove($product);
-        $entityManager->flush();
+        // $entityManager->remove($product);
+        // $entityManager->flush();
+
+        // Busca dados doctrine
+        $products = $entityManager->getRepository(Product::class)->findAll();
+        $products = $entityManager->getRepository(Product::class)->findBySlug('produto-test');
+        $products = $entityManager->getRepository(Product::class)->findOneBySlug('produto-test');
+
+        dump($products);
 
         return $this->render('index.html.twig', compact('name'));
     }
