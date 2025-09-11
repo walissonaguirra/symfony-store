@@ -30,10 +30,16 @@ final class DefaultController extends AbstractController
         // $entityManager->flush();
 
         // Atualizando dados doctrine
-        $product = $entityManager->getRepository(Product::class)->find(1);
-        $product->setName('Produto Test Atualizado');
-        $product->setSlug('produto-test-atualizado');
+        // $product = $entityManager->getRepository(Product::class)->find(1);
+        // $product->setName('Produto Test Atualizado');
+        // $product->setSlug('produto-test-atualizado');
 
+        // $entityManager->flush();
+
+        // Apagar dados doctrine
+        $product = $entityManager->getRepository(Product::class)->find(1);
+
+        $entityManager->remove($product);
         $entityManager->flush();
 
         return $this->render('index.html.twig', compact('name'));
