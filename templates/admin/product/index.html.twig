@@ -19,6 +19,7 @@
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Criado em</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,9 @@
                     <td>{{ product.id }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.createdAt|date('d/m/Y H:i:s') }}</td>
+                    <td>
+                        <a href="{{ path('admin_edit_products', {product: product.id}) }}" class="btn btn-sm btn-primary">Editar</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
