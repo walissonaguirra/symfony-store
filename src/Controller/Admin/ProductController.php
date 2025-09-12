@@ -82,9 +82,17 @@ final class ProductController extends AbstractController
         }
     }
 
-    #[Route('/remove/{product}', name: 'remove_products', methods: 'POST')]
+    #[Route('/remove/{product}', name: 'remove_products', methods: 'GET')]
     public function remove($product, EntityManagerInterface $entityManager): Response
     {
-        $product = $entityManager->getRepository(Product::class)->find($product);
+        try {
+            $product = $entityManager->getRepository(Product::class)->find($product);
+            $entityManager->remove($product);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('admin_index_products');
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
     }
 }
