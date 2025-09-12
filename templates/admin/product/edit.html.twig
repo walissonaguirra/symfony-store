@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+            {# <p>{{ products|length }}</p> #}
+            <h1>{{ "Editar Produto!"|upper }}</h1>
+        </div>
+    </div>
+    <div class="col-12">
+        <form action="/admin/products/update/{{ product.id }}" method="post">
+            <div class="form-group mb-3">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ product.name }}"/>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="description">Descrição</label>
+                <input type="text" id="description" name="description" class="form-control" value="{{ product.description }}"/>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="body">Conteudo/Informações</label>
+                <textarea id="body" name="body" class="form-control">{{ product.bady }}</textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="price">price</label>
+                <input type="number" id="price" name="price" class="form-control" value="{{ product.price }}"/>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" class="form-control" value="{{ product.slug }}"/>
+            </div>
+
+            <div class="form-group mb-3">
+                <button class="btn btn-success btn-lg">Atualizar Produto</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

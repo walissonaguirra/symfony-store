@@ -55,16 +55,31 @@ final class ProductController extends AbstractController
     public function edit($product, EntityManagerInterface $entityManager): Response
     {
         $product = $entityManager->getRepository(Product::class)->find($product);
+
+        return $this->render('admin/product/edit.html.twig', compact('product'));
     }
 
     #[Route('/update/{product}', name: 'update_products', methods: 'POST')]
-    public function update($product, EntityManagerInterface $entityManager): Response
+    public function update($product, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $product = $entityManager->getRepository(Product::class)->find($product);
-        $product->setName('Produto Test Atualizado');
-        $product->setSlug('produto-test-atualizado');
+        try {
+            $data = $request->request->all();
 
-        $entityManager->flush();
+            $product = $entityManager->getRepository(Product::class)->find($product);
+            $product->setName($data['name']);
+            $product->setSlug($data['slug']);
+            $product->setDescription($data['description']);
+            $product->setBady($data['body']);
+            $product->setPrice($data['price']);
+
+            $product->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('admin_edit_products', ['product' => $product->getId()]);
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
     }
 
     #[Route('/remove/{product}', name: 'remove_products', methods: 'POST')]
