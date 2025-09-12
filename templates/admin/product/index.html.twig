@@ -3,8 +3,39 @@
 {% block title %}Hello ProductController!{% endblock %}
 
 {% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+            {# <p>{{ products|length }}</p> #}
+            <h1>{{ "Produtos!"|upper }}</h1>
 
-<div class="example-wrapper">
-    <h1>Produtos! ✅</h1>
+            <a href="/admin/products/create" class="btn btn-success">Criar Produto</a>
+        </div>
+    </div>
+    <div class="col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Criado em</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                {# <tr>
+                    <td>{{ product.getId() }}</td>
+                    <td>{{ product.getName() }}</td>
+                    <td>{{ product.getcreatedAt()|date('d/m/Y H:i:s') }}</td>
+                </tr> #}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.createdAt|date('d/m/Y H:i:s') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

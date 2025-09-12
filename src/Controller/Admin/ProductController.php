@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -22,22 +23,32 @@ final class ProductController extends AbstractController
     #[Route('/create', name: 'create_products', methods: 'GET')]
     public function create(): Response
     {
+        return $this->render('admin/product/create.html.twig');
     }
 
     #[Route('/store', name: 'store_products', methods: 'POST')]
-    public function store(EntityManagerInterface $entityManager): Response
+    public function store(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $product = new Product();
-        $product->setName('Produto Test');
-        $product->setSlug('produto-test');
-        $product->setDescription('Descrição');
-        $product->setBady('Info produto');
-        $product->setPrice(1990);
-        $product->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
-        $product->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+        try {
+            $data = $request->request->all();
 
-        $entityManager->persist($product);
-        $entityManager->flush();
+            $product = new Product();
+            $product->setName($data['name']);
+            $product->setSlug($data['slug']);
+            $product->setDescription($data['description']);
+            $product->setBady($data['body']);
+            $product->setPrice($data['price']);
+
+            $product->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+            $product->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+
+            $entityManager->persist($product);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('admin_index_products');
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
     }
 
     #[Route('/edit/{product}', name: 'edit_products', methods: 'GET')]
