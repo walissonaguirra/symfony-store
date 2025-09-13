@@ -14,29 +14,34 @@ final class DefaultController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $user->setFirstName('Walisson');
-        $user->setLastName('Aguirra');
-        $user->setEmail('walissonaguirra@proton.me');
-        $user->setPassword('senha123');
-        $user->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
-        $user->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+        $user = $entityManager->getRepository(User::class)->find(1);
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        dump($user);
 
-        $address = new Address();
-        $address->setAddress('Rua 1');
-        $address->setNeightborhood('Bairro 1');
-        $address->setNumber(1234);
-        $address->setCity('São Paulo');
-        $address->setState('SP');
-        $address->setZipcode('123456-000');
+        // Relacinamento de Usuario com Endereço
+        // $user = new User();
+        // $user->setFirstName('Walisson');
+        // $user->setLastName('Aguirra');
+        // $user->setEmail('walissonaguirra@proton.me');
+        // $user->setPassword('senha123');
+        // $user->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+        // $user->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
 
-        $address->setUser($user);
+        // $entityManager->persist($user);
+        // $entityManager->flush();
 
-        $entityManager->persist($address);
-        $entityManager->flush();
+        // $address = new Address();
+        // $address->setAddress('Rua 1');
+        // $address->setNeightborhood('Bairro 1');
+        // $address->setNumber(1234);
+        // $address->setCity('São Paulo');
+        // $address->setState('SP');
+        // $address->setZipcode('123456-000');
+
+        // $address->setUser($user);
+
+        // $entityManager->persist($address);
+        // $entityManager->flush();
 
 
         $name = 'Walisson Aguirra';
