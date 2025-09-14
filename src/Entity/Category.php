@@ -2,15 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\Table(name: 'products')]
-class Product
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Table(name: 'categories')]
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,14 +19,8 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $bady = null;
-
-    #[ORM\Column]
-    private ?int $price = null;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
@@ -39,14 +32,14 @@ class Product
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * @var Collection<int, Category>
+     * @var Collection<int, Product>
      */
-    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
-    private Collection $categories;
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'categories')]
+    private Collection $products;
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,33 +64,9 @@ class Product
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getBady(): ?string
-    {
-        return $this->bady;
-    }
-
-    public function setBady(string $bady): static
-    {
-        $this->bady = $bady;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
@@ -139,25 +108,28 @@ class Product
     }
 
     /**
-     * @return Collection<int, Category>
+     * @return Collection<int, Product>
      */
-    public function getCategories(): Collection
+    public function getProducts(): Collection
     {
-        return $this->categories;
+        return $this->products;
     }
 
-    public function addCategory(Category $category): static
+    public function addProduct(Product $product): static
     {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addCategory($this);
         }
 
         return $this;
     }
 
-    public function removeCategory(Category $category): static
+    public function removeProduct(Product $product): static
     {
-        $this->categories->removeElement($category);
+        if ($this->products->removeElement($product)) {
+            $product->removeCategory($this);
+        }
 
         return $this;
     }
