@@ -40,7 +40,7 @@ class User
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user', oprhanRemoval: true)]
     private Collection $orders;
 
     public function __construct()
