@@ -22,7 +22,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/create', name: 'create_products')]
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ProductType::class);
 
@@ -31,29 +31,8 @@ final class ProductController extends AbstractController
         if ($form->isSubmitted()) {
             $product = $form->getData();
 
-            dd($product);
-        }
-
-        return $this->render('admin/product/create.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
-
-    #[Route('/store', name: 'store_products', methods: 'POST')]
-    public function store(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        try {
-            $data = $request->request->all();
-
-            $product = new Product();
-            $product->setName($data['name']);
-            $product->setSlug($data['slug']);
-            $product->setDescription($data['description']);
-            $product->setBady($data['body']);
-            $product->setPrice($data['price']);
-
-            $product->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
-            $product->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+            $product->setCreatedAt();
+            $product->setUpdatedAt();
 
             $entityManager->persist($product);
             $entityManager->flush();
@@ -61,9 +40,11 @@ final class ProductController extends AbstractController
             $this->addFlash('success', 'Produto criado com sucesso!');
 
             return $this->redirectToRoute('admin_index_products');
-        } catch (\Exception $e) {
-            die($e->getMessage());
         }
+
+        return $this->render('admin/product/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     #[Route('/edit/{product}', name: 'edit_products', methods: 'GET')]
