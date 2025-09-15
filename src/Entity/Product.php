@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(name: 'products')]
@@ -18,18 +20,24 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: 'Esta campo é obrigatório!')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: 'Esta campo é obrigatório!')]
+    #[Length(min: 30, minMessage: 'A descrição deve ter no minimo 30 caracteries!')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[NotBlank(message: 'Esta campo é obrigatório!')]
     private ?string $bady = null;
 
     #[ORM\Column]
+    #[NotBlank(message: 'Esta campo é obrigatório!')]
     private ?int $price = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: 'Esta campo é obrigatório!')]
     private ?string $slug = null;
 
     #[ORM\Column]
