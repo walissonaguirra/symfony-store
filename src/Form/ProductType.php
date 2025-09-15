@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,7 +24,7 @@ class ProductType extends AbstractType
             ->add('bady', options: [
                 'label' => 'Conteúdo'
             ])
-            ->add('price', options: [
+            ->add('price', TextType::class, options: [
                 'label' => 'Preço'
             ])
             ->add('slug')
