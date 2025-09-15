@@ -11,7 +11,14 @@
         </div>
     </div>
     <div class="col-12">
-        <form action="/admin/products/update/{{ product.id }}" method="post">
+
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+
+            <button type="submit">Atualizar Produto</button>
+        {{ form_end(form) }}
+
+        {# <form action="/admin/products/update/{{ product.id }}" method="post">
             <div class="form-group mb-3">
                 <label for="name">Nome</label>
                 <input type="text" id="name" name="name" class="form-control" value="{{ product.name }}"/>
@@ -40,7 +47,7 @@
             <div class="form-group mb-3">
                 <button class="btn btn-success btn-lg">Atualizar Produto</button>
             </div>
-        </form>
+        </form> #}
     </div>
 </div>
 {% endblock %}

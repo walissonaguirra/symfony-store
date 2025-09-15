@@ -47,37 +47,32 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{product}', name: 'edit_products', methods: 'GET')]
-    public function edit($product, EntityManagerInterface $entityManager): Response
+    #[Route('/edit/{product}', name: 'edit_products')]
+    public function edit($product, EntityManagerInterface $entityManager, Request $request): Response
     {
         $product = $entityManager->getRepository(Product::class)->find($product);
 
-        return $this->render('admin/product/edit.html.twig', compact('product'));
-    }
+        $form = $this->createForm(ProductType::class, $product);
 
-    #[Route('/update/{product}', name: 'update_products', methods: 'POST')]
-    public function update($product, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        try {
-            $data = $request->request->all();
+        $form->handleRequest($request);
 
-            $product = $entityManager->getRepository(Product::class)->find($product);
-            $product->setName($data['name']);
-            $product->setSlug($data['slug']);
-            $product->setDescription($data['description']);
-            $product->setBady($data['body']);
-            $product->setPrice($data['price']);
+        if ($form->isSubmitted()) {
 
-            $product->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+            $product = $form->getData();
+
+            $product->setUpdatedAt();
 
             $entityManager->flush();
 
             $this->addFlash('success', 'Produto atualizado com sucesso!');
 
             return $this->redirectToRoute('admin_edit_products', ['product' => $product->getId()]);
-        } catch (\Exception $e) {
-            die($e->getMessage());
+
         }
+
+        return $this->render('admin/product/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     #[Route('/remove/{product}', name: 'remove_products', methods: 'GET')]
