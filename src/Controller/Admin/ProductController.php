@@ -21,10 +21,18 @@ final class ProductController extends AbstractController
         return $this->render('admin/product/index.html.twig', compact('products'));
     }
 
-    #[Route('/create', name: 'create_products', methods: 'GET')]
-    public function create(): Response
+    #[Route('/create', name: 'create_products')]
+    public function create(Request $request): Response
     {
         $form = $this->createForm(ProductType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $product = $form->getData();
+
+            dd($product);
+        }
 
         return $this->render('admin/product/create.html.twig', [
             'form' => $form->createView()

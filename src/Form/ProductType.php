@@ -19,12 +19,6 @@ class ProductType extends AbstractType
             ->add('bady')
             ->add('price')
             ->add('slug')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text',
-            ])
             ->add('categories', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'id',
