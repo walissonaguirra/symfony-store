@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,11 @@ final class ProductController extends AbstractController
     #[Route('/create', name: 'create_products', methods: 'GET')]
     public function create(): Response
     {
-        return $this->render('admin/product/create.html.twig');
+        $form = $this->createForm(ProductType::class);
+
+        return $this->render('admin/product/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     #[Route('/store', name: 'store_products', methods: 'POST')]

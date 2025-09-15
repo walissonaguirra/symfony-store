@@ -11,7 +11,13 @@
         </div>
     </div>
     <div class="col-12">
-        <form action="/admin/products/store" method="post">
+
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+        {{ form_end(form) }}
+
+
+        {# <form action="/admin/products/store" method="post">
             <div class="form-group mb-3">
                 <label for="name">Nome</label>
                 <input type="text" id="name" name="name" class="form-control"/>
@@ -40,7 +46,7 @@
             <div class="form-group mb-3">
                 <button class="btn btn-success btn-lg">Crair Produto</button>
             </div>
-        </form>
+        </form> #}
     </div>
 </div>
 {% endblock %}

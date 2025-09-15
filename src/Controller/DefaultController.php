@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +16,21 @@ final class DefaultController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $user = $entityManager->getRepository(User::class)->find(1);
+
+        // $product = $entityManager->getRepository(Product::class)->find(2);
+
+        // $category = new Category();
+        // $category->setName('Tipo A');
+        // $category->setSlug('tipo-a');
+        // $category->setDescription('Descrição de tipo');
+
+        // $category->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+        // $category->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo')));
+
+        // $category->addProduct($product);
+
+        // $entityManager->persist($category);
+        // $entityManager->flush();
 
         dump($user);
 
