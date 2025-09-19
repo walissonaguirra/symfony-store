@@ -2,8 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,15 +14,29 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ProductController extends AbstractController
 {
     #[Route('/', name: 'index_products', methods: 'GET')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(ProductRepository $productRepository): Response
     {
-        $products = $entityManager->getRepository(Product::class)->findAll();
+        $products = $productRepository->findAll();
 
         return $this->render('admin/product/index.html.twig', compact('products'));
     }
 
+    #[Route('/upload')]
+    public function upload(Request $request)
+    {
+        $photos = $request->files->get('photos');
+        $upload_dir = $this->getParameter('upload_dir') . '/products';
+
+        foreach ($photos as $photo) {
+            $photoname = sha1($photo->getClientOriginalName()) . uniqid() . '.' .$photo->guessExtension();
+            $photo->move($upload_dir, $photoname);
+        }
+
+        return new Response('Upload');
+    }
+
     #[Route('/create', name: 'create_products')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ProductType::class);
 
@@ -34,8 +48,8 @@ final class ProductController extends AbstractController
             $product->setCreatedAt();
             $product->setUpdatedAt();
 
-            $entityManager->persist($product);
-            $entityManager->flush();
+            $em->persist($product);
+            $em->flush();
 
             $this->addFlash('success', 'Produto criado com sucesso!');
 
@@ -48,9 +62,9 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/edit/{product}', name: 'edit_products')]
-    public function edit($product, EntityManagerInterface $entityManager, Request $request): Response
+    public function edit($product, EntityManagerInterface $em, ProductRepository $productRepository, Request $request): Response
     {
-        $product = $entityManager->getRepository(Product::class)->find($product);
+        $product = $productRepository->find($product);
 
         $form = $this->createForm(ProductType::class, $product);
 
@@ -62,7 +76,7 @@ final class ProductController extends AbstractController
 
             $product->setUpdatedAt();
 
-            $entityManager->flush();
+            $em->flush();
 
             $this->addFlash('success', 'Produto atualizado com sucesso!');
 
@@ -76,12 +90,12 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/remove/{product}', name: 'remove_products', methods: 'GET')]
-    public function remove($product, EntityManagerInterface $entityManager): Response
+    public function remove($product, EntityManagerInterface $em, ProductRepository $productRepository): Response
     {
         try {
-            $product = $entityManager->getRepository(Product::class)->find($product);
-            $entityManager->remove($product);
-            $entityManager->flush();
+            $product = $productRepository->find($product);
+            $em->remove($product);
+            $em->flush();
 
             $this->addFlash('success', 'Produto apagado com sucesso!');
 
