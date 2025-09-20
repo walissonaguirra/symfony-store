@@ -1,11 +1,11 @@
-<form action="/admin/products/upload" method="post" enctype="multipart/form-data">
+{# <form action="/admin/products/upload" method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="product-upload"c class="mb-2">Upload de fotos</label>
         <input class="form-control" type="file" id="product-upload" name="photos[]" accept="image/*" multiple/>
     </div>
 
     <button type="submit" class="btn btn-lg btn-success">Enviar Fotos</button>
-</form>
+</form> #}
 
 {{ form_start(form, { 'attr': { 'novalidate': 'novalidate' }}) }}
     {{ form_widget(form) }}

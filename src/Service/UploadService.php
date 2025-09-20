@@ -17,23 +17,29 @@ class UploadService
      * @param UploadedFile[] $files Array de arquivos enviados
      * @param string $targetFolder Pasta de destino para os uploads
      */
-    public function upload(array|UploadedFile $files, string $targerFolder)
+    public function upload(array|UploadedFile $files, string $targerFolder): array|string
     {
         if (is_array($files)) {
+            $filesUploaded = [];
             foreach ($files as $file) {
-                $this->move($file, $targerFolder);
+                $filesUploaded[] = $this->move($file, $targerFolder);
             }
+
+            return $filesUploaded;
         } else {
-            $this->move($files, $targerFolder);
+            return $this->move($files, $targerFolder);
         }
     }
 
-    private function move(UploadedFile $file, string $targerFolder): void
+    private function move(UploadedFile $file, string $targerFolder): string
     {
+        $fileName = $this->makeFileName($file);
         $file->move(
             $this->uploadDir . '/' . $targerFolder,
-            $this->makeFileName($file)
+            $fileName
         );
+
+        return $fileName;
     }
 
     private function makeFileName(UploadedFile $file): string

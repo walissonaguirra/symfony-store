@@ -23,7 +23,7 @@ class ProductPhoto
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'productPhotos')]
+    #[ORM\ManyToOne(inversedBy: 'productPhotos', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 

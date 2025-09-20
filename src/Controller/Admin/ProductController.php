@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\ProductPhoto;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\UploadService;
@@ -22,17 +23,17 @@ final class ProductController extends AbstractController
         return $this->render('admin/product/index.html.twig', compact('products'));
     }
 
-    #[Route('/upload')]
-    public function upload(Request $request, UploadService $uploadService)
-    {
-        $photos = $request->files->get('photos');
-        $uploadService->upload($photos, 'products');
+    // #[Route('/upload')]
+    // public function upload(Request $request, UploadService $uploadService)
+    // {
+    //     $photos = $request->files->get('photos');
+    //     $uploadService->upload($photos, 'products');
 
-        return new Response('Upload');
-    }
+    //     return new Response('Upload');
+    // }
 
     #[Route('/create', name: 'create_products')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, UploadService $uploadService): Response
     {
         $form = $this->createForm(ProductType::class);
 
@@ -43,6 +44,30 @@ final class ProductController extends AbstractController
 
             $product->setCreatedAt();
             $product->setUpdatedAt();
+
+            $photos = $form['photos']->getData();
+
+            if ($photos) {
+                $photosUpdated = $uploadService->upload($photos, 'products');
+
+                if (is_array($photosUpdated)) {
+                    foreach($photosUpdated as $photo) {
+                        $productPhoto = new ProductPhoto();
+                        $productPhoto->setPhoto($photo);
+                        $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+                        $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+
+                        $product->addProductPhoto($productPhoto);
+                    }
+                } else {
+                    $productPhoto = new ProductPhoto();
+                    $productPhoto->setPhoto($photosUpdated);
+                    $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+                    $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+
+                    $product->addProductPhoto($productPhoto);
+                }
+            }
 
             $em->persist($product);
             $em->flush();
