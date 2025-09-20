@@ -83,7 +83,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/edit/{product}', name: 'edit_products')]
-    public function edit($product, EntityManagerInterface $em, ProductRepository $productRepository, Request $request): Response
+    public function edit($product, EntityManagerInterface $em, ProductRepository $productRepository, Request $request, UploadService $uploadService): Response
     {
         $product = $productRepository->find($product);
 
@@ -94,8 +94,31 @@ final class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $product = $form->getData();
-
             $product->setUpdatedAt();
+
+            $photos = $form['photos']->getData();
+
+            if ($photos) {
+                $photosUpdated = $uploadService->upload($photos, 'products');
+
+                if (is_array($photosUpdated)) {
+                    foreach($photosUpdated as $photo) {
+                        $productPhoto = new ProductPhoto();
+                        $productPhoto->setPhoto($photo);
+                        $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+                        $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+
+                        $product->addProductPhoto($productPhoto);
+                    }
+                } else {
+                    $productPhoto = new ProductPhoto();
+                    $productPhoto->setPhoto($photosUpdated);
+                    $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+                    $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+
+                    $product->addProductPhoto($productPhoto);
+                }
+            }
 
             $em->flush();
 
