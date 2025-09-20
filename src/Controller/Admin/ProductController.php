@@ -23,15 +23,6 @@ final class ProductController extends AbstractController
         return $this->render('admin/product/index.html.twig', compact('products'));
     }
 
-    // #[Route('/upload')]
-    // public function upload(Request $request, UploadService $uploadService)
-    // {
-    //     $photos = $request->files->get('photos');
-    //     $uploadService->upload($photos, 'products');
-
-    //     return new Response('Upload');
-    // }
-
     #[Route('/create', name: 'create_products')]
     public function create(Request $request, EntityManagerInterface $em, UploadService $uploadService): Response
     {
@@ -49,24 +40,8 @@ final class ProductController extends AbstractController
 
             if ($photos) {
                 $photosUpdated = $uploadService->upload($photos, 'products');
-
-                if (is_array($photosUpdated)) {
-                    foreach($photosUpdated as $photo) {
-                        $productPhoto = new ProductPhoto();
-                        $productPhoto->setPhoto($photo);
-                        $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-                        $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-
-                        $product->addProductPhoto($productPhoto);
-                    }
-                } else {
-                    $productPhoto = new ProductPhoto();
-                    $productPhoto->setPhoto($photosUpdated);
-                    $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-                    $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-
-                    $product->addProductPhoto($productPhoto);
-                }
+                $photosUpdated = $this->makeProductPhotoEntoties($photosUpdated);
+                $product->addManyProductPhoto($photosUpdated);
             }
 
             $em->persist($product);
@@ -100,24 +75,8 @@ final class ProductController extends AbstractController
 
             if ($photos) {
                 $photosUpdated = $uploadService->upload($photos, 'products');
-
-                if (is_array($photosUpdated)) {
-                    foreach($photosUpdated as $photo) {
-                        $productPhoto = new ProductPhoto();
-                        $productPhoto->setPhoto($photo);
-                        $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-                        $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-
-                        $product->addProductPhoto($productPhoto);
-                    }
-                } else {
-                    $productPhoto = new ProductPhoto();
-                    $productPhoto->setPhoto($photosUpdated);
-                    $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-                    $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
-
-                    $product->addProductPhoto($productPhoto);
-                }
+                $photosUpdated = $this->makeProductPhotoEntoties($photosUpdated);
+                $product->addManyProductPhoto($photosUpdated);
             }
 
             $em->flush();
@@ -147,5 +106,24 @@ final class ProductController extends AbstractController
         } catch (\Exception $e) {
             die($e->getMessage());
         }
+    }
+
+    /**
+     * @param string[] $photosUpdated
+     * @return ProductPhoto[]
+     */
+    private function makeProductPhotoEntoties(array $photosUpdated): array
+    {
+        $entities = [];
+
+        foreach($photosUpdated as $photo) {
+            $productPhoto = new ProductPhoto();
+            $productPhoto->setPhoto($photo);
+            $productPhoto->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+            $productPhoto->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_paulo')));
+            $entities[] = $productPhoto;
+        }
+
+        return $entities;
     }
 }

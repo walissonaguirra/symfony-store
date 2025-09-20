@@ -185,6 +185,19 @@ class Product
         return $this->productPhotos;
     }
 
+    /**
+     * @param ProductPhoto[] $photos
+     * @return Product
+     */
+    public function addManyProductPhoto(array $photos): static
+    {
+        foreach ($photos as $photo) {
+            $this->addProductPhoto($photo);
+        }
+
+        return $this;
+    }
+
     public function addProductPhoto(ProductPhoto $productPhoto): static
     {
         if (!$this->productPhotos->contains($productPhoto)) {
