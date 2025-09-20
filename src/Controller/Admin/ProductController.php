@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,15 +23,10 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/upload')]
-    public function upload(Request $request)
+    public function upload(Request $request, UploadService $uploadService)
     {
         $photos = $request->files->get('photos');
-        $upload_dir = $this->getParameter('upload_dir') . '/products';
-
-        foreach ($photos as $photo) {
-            $photoname = sha1($photo->getClientOriginalName()) . uniqid() . '.' .$photo->guessExtension();
-            $photo->move($upload_dir, $photoname);
-        }
+        $uploadService->upload($photos, 'products');
 
         return new Response('Upload');
     }
