@@ -44,6 +44,18 @@
                 <button class="btn btn-success btn-lg">Atualizar Produto</button>
             </div>
         </form> #}
+
+        <hr/>
+
+        <h3>Imagens do Produto</h3>
+        <div class="row">
+            {% for photo in productPhotos %}
+                <div class="col-4 mb-3">
+                    <img class="img-fluid" src="{{ '/uploads/products/' ~ photo.photo }}" alt="">
+                </div>
+            {% endfor %}
+        </div>
+
     </div>
 </div>
 {% endblock %}
